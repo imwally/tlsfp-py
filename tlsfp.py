@@ -11,17 +11,9 @@ parser.add_argument('-a', type=int, default=1, help='SHA1 or SHA256 algorithm')
 
 
 def get_der_cert(hostname: str) -> bytes:
-    try:
-        cert = ssl.get_server_certificate(
-            (hostname, 443),
-            ssl_version=ssl.PROTOCOL_TLS_CLIENT
-        )
-        cert_der = ssl.PEM_cert_to_DER_cert(cert)
-        
-        return cert_der
-        
-    except Exception as e:
-        print(e)
+    cert = ssl.get_server_certificate((hostname, 443))
+    cert_der = ssl.PEM_cert_to_DER_cert(cert)
+    return cert_der
 
 
 def fingerprint_sha256(hostname: str) -> str:
@@ -34,16 +26,20 @@ def fingerprint_sha1(hostname: str) -> str:
     return sha1(der_cert).hexdigest()
 
 
+def main():
+    args = parser.parse_args()
+    hostname = args.hostname
+    algo = args.a
+
+    try:
+        if algo == 256:
+            fp = fingerprint_sha256(hostname)
+        elif algo == 1:
+            fp = fingerprint_sha1(hostname)
+        print(fp)
+    except Exception as e:
+        print('error fetching fingerprint for {}: {}'.format(hostname, e))
+    
 
 if __name__ == '__main__':
-    try:
-        args = parser.parse_args()
-        hostname = args.hostname
-        algo = args.a
-
-        if algo == 256:
-            print(fingerprint_sha256(hostname))
-        else:
-            print(fingerprint_sha1(hostname))
-    except Exception as e:
-        print(e)
+    main()
