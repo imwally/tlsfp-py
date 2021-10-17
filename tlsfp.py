@@ -1,13 +1,14 @@
 import argparse
 import ssl
-from hashlib import sha1, sha256
 
+from hashlib import sha1, sha256
 from os import sys
 
 
 parser = argparse.ArgumentParser(description='Get TLS fingerprint from hostname.')
 parser.add_argument('hostname', type=str, help='(e.g., duckduckgo.com)')
-parser.add_argument('-a', type=int, help='SHA1 or SHA256 algorithm')
+parser.add_argument('-a', type=int, default=1, help='SHA1 or SHA256 algorithm')
+
 
 def get_der_cert(hostname: str) -> bytes:
     try:
