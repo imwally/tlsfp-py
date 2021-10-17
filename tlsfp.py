@@ -2,7 +2,6 @@ import argparse
 import ssl
 
 from hashlib import sha1, sha256
-from os import sys
 
 
 parser = argparse.ArgumentParser(description='Get TLS fingerprint from hostname.')
